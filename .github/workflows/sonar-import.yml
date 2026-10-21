@@ -15,8 +15,8 @@ jobs:
 
       - name: Import repository
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_URL: ${{ vars.SONAR_HOST_URL }}
+          SONARQUBE_CLI_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONARQUBE_CLI_SERVER: ${{ vars.SONAR_HOST_URL }}
         run: |
           sonar --version
           sonar auth status
