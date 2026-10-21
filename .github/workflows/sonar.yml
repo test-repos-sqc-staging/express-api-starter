@@ -7,6 +7,9 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
+env:
+  SCANNER_VERSION: 7.2.0.5079
+
 jobs:
   sonar:
     name: Analyze
@@ -23,21 +26,20 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Show Java
+      - name: Install SonarScanner (no bundled JRE)
         run: |
-          java -version
-          echo "JAVA_HOME=$JAVA_HOME"
+          curl -sSLo scanner.zip "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCANNER_VERSION}.zip"
+          unzip -q scanner.zip -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/sonar-scanner-${SCANNER_VERSION}/bin" >> "$GITHUB_PATH"
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.organization=test-repos-sqc-staging
-            -Dsonar.projectKey=test-repos-sqc-staging_express-api-starter
-            -Dsonar.sources=src
-            -Dsonar.tests=test
+        run: |
+          sonar-scanner \
+            -Dsonar.organization=test-repos-sqc-staging \
+            -Dsonar.projectKey=test-repos-sqc-staging_express-api-starter \
+            -Dsonar.sources=src \
+            -Dsonar.tests=test \
             -Dsonar.scanner.skipJreProvisioning=true
-            -X
