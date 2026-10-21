@@ -1,0 +1,23 @@
+name: SonarQube Import Repo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  import:
+    name: Import repo into SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SonarQube CLI
+        run: |
+          curl -sSL https://raw.githubusercontent.com/SonarSource/sonarqube-cli/refs/heads/master/user-scripts/install.sh | bash
+          echo "$HOME/.local/share/sonarqube-cli/bin" >> "$GITHUB_PATH"
+
+      - name: Import repository
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_URL: ${{ vars.SONAR_HOST_URL }}
+        run: |
+          sonar --version
+          sonar auth status
+          sonar import --repo "${{ github.repository }}" --non-interactive
