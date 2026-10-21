@@ -23,6 +23,11 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Show Java
+        run: |
+          java -version
+          echo "JAVA_HOME=$JAVA_HOME"
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
@@ -35,3 +40,4 @@ jobs:
             -Dsonar.sources=src
             -Dsonar.tests=test
             -Dsonar.scanner.skipJreProvisioning=true
+            -X
