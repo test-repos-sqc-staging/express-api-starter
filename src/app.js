@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import api from "./api/index.js";
+import { env } from "./env.js";
 
 import * as middlewares from "./middlewares.js";
 
@@ -11,7 +12,7 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: env.CORS_ORIGIN.split(",").map(origin => origin.trim()) }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
